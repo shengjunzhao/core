@@ -19,6 +19,7 @@
         <junit.version>4.12</junit.version>
         <jdk.version>1.8</jdk.version>
         <zookeeper.version>3.4.8</zookeeper.version>
+        <curator.version>4.0.1</curator.version>
     </properties>
 
     <dependencies>
@@ -58,7 +59,19 @@
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>${zookeeper.version}</version>
-            <type>pom</type>
+        </dependency>
+
+        <!-- curator -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator.version}</version>
         </dependency>
 
         <dependency>
@@ -80,6 +93,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
