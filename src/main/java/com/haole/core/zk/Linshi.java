@@ -20,16 +20,25 @@ public class Linshi {
         };
 
         Watcher watcher1 = (WatchedEvent event) -> {
-            System.out.println("event:" + event.toString());
+            System.out.println("=======event:" + event.toString());
         };
 
-        ZooKeeper zk = new ZooKeeper("192.168.209.132:2181", 500000, watcher1);
+//        ZooKeeper zk = new ZooKeeper("192.168.209.132:2181", 500000, watcher1);
+        ZooKeeper zk = new ZooKeeper("10.37.147.250:12181", 500000, watcher1);
 
         //创建一个节点root，数据是mydata,不进行ACL权限控制，节点为永久性的(即客户端shutdown了也不会消失)
+//        zk.create("/haole", "haole".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+//        zk.create("/haole/test", "test".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 //        zk.create("/haole/test/app", "mydata".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 
+        System.out.println(zk.getChildren("/haole/test/app", true));
+        System.out.println("****create childone");
         //在root下面创建一个childone znode,数据为childone,不进行ACL权限控制，节点为永久性的
-//        zk.create("/haole/test/app/childone", "childone".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        // 执行了watch
+        zk.create("/haole/test/app/childone", "childone".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        System.out.println("****create childtwo");
+        // 未执行watch
+        zk.create("/haole/test/app/childtwo", "childtwo".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 //取得/root节点下的子节点名称,返回List<String>
 //        List<String> children = zk.getChildren("/haole", true);
 //        System.out.println(children);
@@ -49,12 +58,12 @@ public class Linshi {
 //        zk.create("/haole/test/app/testChildPath3","3".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL);
 //        zk.create("/haole/test/app/testChildPath4","4".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL);
 
-        zk.create("/haole/test/app/testChildPath","1".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
-        zk.create("/haole/test/app/testChildPath","2".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
-        zk.create("/haole/test/app/testChildPath","3".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
-        zk.create("/haole/test/app/testChildPath","4".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
+//        zk.create("/haole/test/app/testChildPath","1".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
+//        zk.create("/haole/test/app/testChildPath","2".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
+//        zk.create("/haole/test/app/testChildPath","3".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
+//        zk.create("/haole/test/app/testChildPath","4".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL_SEQUENTIAL);
 
-        System.out.println(zk.getChildren("/haole/test/app", true));
+//        System.out.println(zk.getChildren("/haole/test/app", true));
 //关闭session
         zk.close();
     }

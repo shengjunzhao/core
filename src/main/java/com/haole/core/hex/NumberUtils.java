@@ -30,6 +30,7 @@ public class NumberUtils {
 
     /**
      * 判断一个数字是否是2次幂
+     *
      * @param n
      * @return
      */
@@ -37,4 +38,12 @@ public class NumberUtils {
         return (n & (n - 1)) == 0;
     }
 
+    /**
+     * 用位运算计算n个bit能表示的最大数值
+     * @param bit
+     * @return
+     */
+    public static long maxOfbit(int bit) {
+        return -1L ^ (-1 << bit);
+    }
 }
