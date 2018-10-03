@@ -23,12 +23,8 @@ public class DistributedID {
     private static final String ID_NAME = "/did-";
     private ZooKeeper zk;
 
-    public DistributedID(ZooKeeper zk) {
+    public DistributedID(ZooKeeper zk) throws KeeperException, InterruptedException {
         this.zk = zk;
-    }
-
-    public long getId(String bussiness) throws KeeperException, InterruptedException {
-        long id = 0L;
         Stat stat = zk.exists(root, false);
         if (null == stat) {
             String[] split = root.split("\\/");
@@ -38,18 +34,22 @@ public class DistributedID {
                     sb.append("/").append(s);
                     stat = zk.exists(sb.toString(), false);
                     if (null == stat)
-                        zk.create(sb.toString(), "id".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                        zk.create(sb.toString(), "i".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 }
             }
         }
+    }
+
+    public long getId(String bussiness) throws KeeperException, InterruptedException {
+        long id = 0L;
         String path = root + "/" + bussiness;
         System.out.println(path);
-        stat = zk.exists(path, false);
+        Stat stat = zk.exists(path, false);
         if (null == stat)
-            zk.create(path, "id".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            zk.create(path, "i".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         path = path + ID_NAME;
         String value = zk
-                .create(path, "id".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+                .create(path, "i".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         id = Long.valueOf(value.substring(path.length())).longValue();
 
         return id;
