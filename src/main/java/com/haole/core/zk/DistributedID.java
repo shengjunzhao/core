@@ -20,6 +20,7 @@ import java.io.IOException;
 public class DistributedID {
 
     private static final String root = "/haole/id";
+    private static final String ID_NAME = "/did-";
     private ZooKeeper zk;
 
     public DistributedID(ZooKeeper zk) {
@@ -43,6 +44,10 @@ public class DistributedID {
         }
         String path = root + "/" + bussiness;
         System.out.println(path);
+        stat = zk.exists(path, false);
+        if (null == stat)
+            zk.create(path, "id".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        path = path + ID_NAME;
         String value = zk
                 .create(path, "id".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         id = Long.valueOf(value.substring(path.length())).longValue();
@@ -54,7 +59,8 @@ public class DistributedID {
         //        String root1 = "/haole/id";
         //        String[] s = root1.split("\\/");
         //        System.out.println(s[1]);
-        ZooKeeper zk = new ZooKeeper("10.37.147.250:12181", 500000, null);
+//        ZooKeeper zk = new ZooKeeper("10.37.147.250:12181", 500000, null);
+        ZooKeeper zk = new ZooKeeper("192.168.209.132:2181", 500000, null);
         DistributedID id = new DistributedID(zk);
         System.out.println(id.getId("snow"));
         System.out.println(id.getId("snow"));
