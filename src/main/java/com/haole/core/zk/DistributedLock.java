@@ -6,7 +6,7 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -58,31 +58,37 @@ public class DistributedLock {
         }
         String path = root + "/" + bussiness;
         Stat stat = zk.exists(path, false);
-        if (null == stat)
-            zk.create(path, "l".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-        path = path + LOCK_NAME;
-        String node = zk.create(path, "l".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-        try {
-            localLock.lock();
-            List<String> childrenNodes = zk.getChildren(path, false);
-            childrenNodes.sort((s1, s2) -> s1.compareTo(s2));
-            int currentIndex = childrenNodes.indexOf(node);
-            int prevIndex = currentIndex - 1;
-            stat = null;
-            while (prevIndex >= 0) {
-                stat = zk.exists(childrenNodes.get(prevIndex), new PredecessorNodeWatcher(condition));
-                if (stat != null) break;
-            }
-            if (null == stat) { // 获取到锁
-                LockData lockData = new LockData(new AtomicInteger(1), node);
-                threadLocal.set(lockData);
-            } else { //前序节点存在，等待前序节点被删除，释放锁
-                condition.await();
-            }
-        } finally {
-            localLock.unlock();
+        if (null == stat) {
+            String bussinessNode = zk.create(path, "l".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            System.out.println("==== business node:" + bussinessNode);
         }
-        return false;
+        String lockPath = path + LOCK_NAME;
+        String node = zk.create(lockPath, "l".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        for (; ; ) {
+            try {
+                localLock.lock();
+                List<String> childrenNodes = zk.getChildren(path, false);
+                childrenNodes.sort((s1, s2) -> s1.compareTo(s2));
+                String lastNode = node.substring(node.lastIndexOf("/") + 1);
+                int currentIndex = childrenNodes.indexOf(lastNode);
+                int prevIndex = currentIndex - 1;
+                stat = null;
+                while (prevIndex >= 0) {
+                    stat = zk.exists(path + "/" + childrenNodes.get(prevIndex), new PredecessorNodeWatcher(condition));
+                    if (stat != null) break;
+                }
+                if (null == stat) { // 获取到锁
+                    LockData lockData = new LockData(new AtomicInteger(1), node);
+                    threadLocal.set(lockData);
+                    return true;
+                } else { //前序节点存在，等待前序节点被删除，释放锁
+                    condition.await();
+                    return true;
+                }
+            } finally {
+                localLock.unlock();
+            }
+        }
     }
 
     public void unlock() throws KeeperException, InterruptedException {
@@ -92,6 +98,7 @@ public class DistributedLock {
         if (lockData.hits.decrementAndGet() == 0) {
             threadLocal.remove();
             zk.delete(lockData.node, -1);
+            System.out.println("===== romove lock:" + lockData.node);
         }
     }
 
@@ -113,6 +120,18 @@ public class DistributedLock {
             this.hits = hits;
             this.node = node;
         }
+    }
+
+    public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
+        ZooKeeper zk = new ZooKeeper("192.168.209.132:2181", 500000, null);
+        DistributedLock dlock = new DistributedLock(zk);
+        try {
+            dlock.lock("pay");
+            System.out.println("test distribute lock");
+        } finally {
+            dlock.unlock();
+        }
+        zk.close();
     }
 
 
