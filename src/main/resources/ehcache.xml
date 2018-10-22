@@ -1,0 +1,29 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false" monitoring="autodetect"
+         dynamicConfig="true"  >
+    <!-- maxBytesLocalHeap="400M" maxBytesLocalOffHeap="2G" -->
+    <!--maxElementsInMemory="1000"-->
+    <!-- maxBytesLocalHeap maxEntriesLocalHeap 只能二选一 -->
+    <defaultCache
+            eternal="false"
+            maxEntriesLocalHeap="1000"
+            overflowToOffHeap="false"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="600"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <cache
+            name="acctinfo"
+            eternal="false"
+            maxEntriesLocalHeap="1000"
+            overflowToOffHeap="false"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="120"
+            memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>
