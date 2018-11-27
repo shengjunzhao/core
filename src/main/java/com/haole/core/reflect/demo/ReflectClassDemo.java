@@ -1,15 +1,14 @@
 package com.haole.core.reflect.demo;
 
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Created by shengjunzhao on 2018/11/24.
  */
 public class ReflectClassDemo {
 
-    public static void reflectClass() {
+    public static void reflectClass() throws NoSuchMethodException {
         HashMap<String, Integer> map = new HashMap<>();
         Class<? extends HashMap> mapClass = map.getClass();
         LinkedHashMap<String, Integer> linkedHashMap = new LinkedHashMap<>();
@@ -36,8 +35,19 @@ public class ReflectClassDemo {
         for (Class<?> c : mapClasses)
             System.out.println("getClasses=" + c);
         Constructor<?>[] cons = mapClass.getConstructors();
-        for (Constructor<?> c : cons)
+        System.out.println("---------------------------------");
+        for (Constructor<?> c : cons) {
             System.out.println("getConstructors=" + c.toGenericString());
+            Class<?>[] pcs = c.getParameterTypes();
+            for (Class cl : pcs)
+                System.out.println("getParameterTypes=" + cl.toGenericString());
+            TypeVariable<?>[] tvs = c.getTypeParameters();
+            for (TypeVariable<?> tv : tvs)
+                System.out.println("getTypeParameters=" + tv.getTypeName());
+            Type[] types = c.getGenericParameterTypes();
+            for (Type t : types)
+                System.out.println("getGenericParameterTypes=" + t.getTypeName());
+        }
         Color[] colors = Color.class.getEnumConstants();
         for (Color c : colors)
             System.out.println("getEnumConstants=" + c.name());
@@ -48,10 +58,44 @@ public class ReflectClassDemo {
             System.out.println("getEnumConstants=" + s.getName());
         }
         System.out.println("getAnnotatedSuperclass=" + mapClass.getAnnotatedSuperclass());
+        Constructor<HashMap<String, Integer>> con = (Constructor<HashMap<String, Integer>>) mapClass
+                .getConstructor(Map.class);
+        //        Class<HashMap<String, Integer>>[] params = (Class<HashMap<String, Integer>>[]) con.getParameterTypes();
+        //        Class<?>[] params = con.getParameterTypes();
+        //        Class<HashMap<String, Integer>> param0 = params[0];
+        Type[] params = con.getGenericParameterTypes();
+        Type param0 = params[0];
+        System.out.println("is ParameterizedType=" + (param0 instanceof ParameterizedType));
+        System.out.println("is TypeVariable=" + (param0 instanceof TypeVariable));
+        if (param0 instanceof ParameterizedType) {
+            ParameterizedType pp = (ParameterizedType) param0;
+            Type[] typeVs = pp.getActualTypeArguments();
+            for (Type tv : typeVs) {
+                System.out.println("is WildcardType=" + (tv instanceof WildcardType));
+            }
+        }
 
     }
 
-    public static void main(String[] args) {
+    public static void typeVariable(List<Date> list) {
+        System.out.println(list.getClass());
+        System.out.println(list.getClass().getGenericSuperclass());
+        Class<List<Date>> clazz = (Class<List<Date>>) list.getClass();
+        TypeVariable tval[] = clazz.getTypeParameters();
+        TypeVariable v = tval[0];
+        //        Type t[] = v.getBounds();
+        //        System.out.println(t.length);
+        //        System.out.println(v.getGenericDeclaration().getTypeParameters()[0]);
+        System.out.println(v.getGenericDeclaration());
+        System.out.println(v.getName());
+
+        System.out.println(tval.length);
+        for (TypeVariable val : tval)
+            System.out.println(val);
+    }
+
+    public static void main(String[] args) throws NoSuchMethodException {
         reflectClass();
+        //        typeVariable(new ArrayList<>());
     }
 }
