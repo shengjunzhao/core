@@ -1,5 +1,7 @@
 package com.haole.core.reflect.demo;
 
+import com.haole.core.cache.impl.EhcacheServiceImpl;
+
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -74,6 +76,80 @@ public class ReflectClassDemo {
                 System.out.println("is WildcardType=" + (tv instanceof WildcardType));
             }
         }
+        Class<?>[] expClazz = ReflectClassDemo.class.getMethod("reflectClass").getExceptionTypes();
+        for (Class<?> ex : expClazz)
+            System.out.println("getExceptionTypes=" + ex);
+        Type[] expTypes = ReflectClassDemo.class.getMethod("reflectClass").getGenericExceptionTypes();
+        for (Type ex : expTypes)
+            System.out.println("getGenericExceptionTypes=" + ex);
+        Method m = ReflectClassDemo.class.getMethod("method");
+        System.out.println(m.getGenericExceptionTypes()[0]);
+        System.out.println(m.getExceptionTypes()[0]);
+        System.out.println("getAnnotatedReturnType=" + con.getAnnotatedReturnType().getType().toString());
+        System.out.println("getAnnotatedReceiverType=" + con.getAnnotatedReceiverType().getType().toString());
+        Method getM = mapClass.getMethod("get", Object.class);
+        System.out.println("method getName()=" + getM.getName());
+        System.out.println("getAnnotatedReturnType=" + getM.getAnnotatedReturnType().getType().toString());
+        System.out.println("getReturnType=" + getM.getReturnType().toString());
+        System.out.println("getAnnotatedReceiverType=" + getM.getAnnotatedReceiverType().getType().toString());
+        System.out.println("---------------------------------");
+        Method[] methods = mapClass.getMethods();
+        for (Method method : methods) {
+            if ("put".equals(method.getName())) {
+                TypeVariable<Method>[] putTvs = method.getTypeParameters();
+                for (TypeVariable<Method> tv : putTvs)
+                    System.out.println("getTypeParameters=" + tv.getTypeName());
+                System.out.println("getReturnType=" + method.getReturnType());
+                System.out.println("getGenericReturnType=" + method.getGenericReturnType());
+
+                Class<?>[] cparams = method.getParameterTypes();
+                for (Class<?> cp : cparams)
+                    System.out.println("method getParameterTypes=" + cp);
+
+                Type[] gtypes = method.getGenericParameterTypes();
+                for (Type gt : gtypes)
+                    System.out.println("method getGenericParameterTypes=" + gt.getTypeName());
+            }
+            if ("putAll".equals(method.getName())) {
+                Class<?>[] cparams = method.getParameterTypes();
+                for (Class<?> cp : cparams)
+                    System.out.println("putAll getParameterTypes=" + cp);
+
+                Type[] gtypes = method.getGenericParameterTypes();
+                for (Type gt : gtypes)
+                    System.out.println("putAll getGenericParameterTypes=" + gt.getTypeName());
+            }
+
+            if ("isEmpty".equals(method.getName())) {
+                System.out.println("isEmpty getReturnType=" + method.getReturnType());
+                System.out.println("isEmpty getGenericReturnType=" + method.getGenericReturnType());
+            }
+        }
+
+        System.out.println("---------------------------------");
+        TypeVariable<? extends Class<? extends HashMap>>[] putTvs = mapClass.getTypeParameters();
+        for (TypeVariable<? extends Class<? extends HashMap>> tv : putTvs)
+            System.out.println("hashmap getTypeParameters=" + tv.getTypeName());
+        System.out.println("---------------------------------");
+        Method[] ttMehods = EhcacheServiceImpl.class.getMethods();
+        for (Method tm : ttMehods) {
+            if ("get".equals(tm.getName())) {
+                System.out.println("getReturnType=" + tm.getReturnType());
+                System.out.println("getGenericReturnType=" + tm.getGenericReturnType());
+                TypeVariable<Method>[] tmm = tm.getTypeParameters();
+                for (TypeVariable<Method> tv : tmm) {
+                    System.out.println("method getTypeParameters=" + tv.getTypeName());
+                }
+                Class<?>[] cparams = tm.getParameterTypes();
+                for (Class<?> cp : cparams)
+                    System.out.println("method getParameterTypes=" + cp);
+
+                Type[] gtypes = tm.getGenericParameterTypes();
+                for (Type gt : gtypes)
+                    System.out.println("method getGenericParameterTypes=" + gt.getTypeName());
+
+            }
+        }
 
     }
 
@@ -92,6 +168,9 @@ public class ReflectClassDemo {
         System.out.println(tval.length);
         for (TypeVariable val : tval)
             System.out.println(val);
+    }
+
+    public static <T extends NoSuchFieldException> void method() throws T {
     }
 
     public static void main(String[] args) throws NoSuchMethodException {
