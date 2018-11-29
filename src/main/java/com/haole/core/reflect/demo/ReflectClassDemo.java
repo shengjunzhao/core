@@ -2,6 +2,7 @@ package com.haole.core.reflect.demo;
 
 import com.haole.core.cache.impl.EhcacheServiceImpl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -10,7 +11,7 @@ import java.util.*;
  */
 public class ReflectClassDemo {
 
-    public static void reflectClass() throws NoSuchMethodException {
+    public static void reflectClass() throws NoSuchMethodException, NoSuchFieldException {
         HashMap<String, Integer> map = new HashMap<>();
         Class<? extends HashMap> mapClass = map.getClass();
         LinkedHashMap<String, Integer> linkedHashMap = new LinkedHashMap<>();
@@ -147,9 +148,22 @@ public class ReflectClassDemo {
                 Type[] gtypes = tm.getGenericParameterTypes();
                 for (Type gt : gtypes)
                     System.out.println("method getGenericParameterTypes=" + gt.getTypeName());
-
             }
         }
+
+        Field threshold = mapClass.getDeclaredField("table");
+        System.out.println("field getType ="+threshold.getType());
+        System.out.println("field getGenericType ="+threshold.getGenericType());
+        System.out.println("field getClass ="+threshold.getClass());
+
+        Annotation[] anns =threshold.getAnnotations();
+        for (Annotation ann : anns)
+            System.out.println("getAnnotations="+ann.toString());
+
+        // Annotation ann = threshold.getAnnotation(String.class);
+
+
+
 
     }
 
@@ -173,7 +187,7 @@ public class ReflectClassDemo {
     public static <T extends NoSuchFieldException> void method() throws T {
     }
 
-    public static void main(String[] args) throws NoSuchMethodException {
+    public static void main(String[] args) throws NoSuchMethodException, NoSuchFieldException {
         reflectClass();
         //        typeVariable(new ArrayList<>());
     }
