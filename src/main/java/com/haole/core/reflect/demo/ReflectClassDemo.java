@@ -54,7 +54,6 @@ public class ReflectClassDemo {
 //        Method[] methods = mapClass.getMethods();
 //        for (Method m : methods)
 //            System.out.println("getMethods=" + m.toGenericString());
-            System.out.println("getClasses=" + c);
         Constructor<?>[] cons = mapClass.getConstructors();
         System.out.println("---------------------------------");
         for (Constructor<?> c : cons) {
