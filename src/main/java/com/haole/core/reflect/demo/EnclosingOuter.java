@@ -35,7 +35,6 @@ public class EnclosingOuter {
              */
         }
 
-        ;
     };
 
     public static void test() {
