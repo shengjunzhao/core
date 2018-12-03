@@ -1,6 +1,8 @@
 package com.haole.core.reflect.demo;
 
 import com.haole.core.cache.impl.EhcacheServiceImpl;
+import com.haole.core.reflect.annotation.lx.DBTable;
+import com.haole.core.reflect.annotation.lx.SQLString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -152,17 +154,19 @@ public class ReflectClassDemo {
         }
 
         Field threshold = mapClass.getDeclaredField("table");
-        System.out.println("field getType ="+threshold.getType());
-        System.out.println("field getGenericType ="+threshold.getGenericType());
-        System.out.println("field getClass ="+threshold.getClass());
+        System.out.println("field getType =" + threshold.getType());
+        System.out.println("field getGenericType =" + threshold.getGenericType());
+        System.out.println("field getClass =" + threshold.getClass());
 
-        Annotation[] anns =threshold.getAnnotations();
+        Annotation[] anns = threshold.getAnnotations();
         for (Annotation ann : anns)
-            System.out.println("getAnnotations="+ann.toString());
-
-        // Annotation ann = threshold.getAnnotation(String.class);
-
-
+            System.out.println("getAnnotations=" + ann.toString());
+        Field memberF = com.haole.core.reflect.annotation.lx.Member.class.getDeclaredField("id");
+        Annotation aid = memberF.getAnnotation(SQLString.class);
+        System.out.println("getAnnotation=" + aid);
+        System.out.println("getAnnotatedType=" + memberF.getAnnotatedType().getType());
+        System.out.println("getType=" + memberF.getType());
+        System.out.println("getGenericType=" + memberF.getGenericType());
 
 
     }
