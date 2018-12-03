@@ -7,6 +7,11 @@ import com.haole.core.reflect.annotation.lx.SQLString;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by shengjunzhao on 2018/11/24.
@@ -34,11 +39,23 @@ public class ReflectClassDemo {
         System.out.println("String[].class getTypeName=" + String[].class.getTypeName()); //java.lang.String[]
         System.out.println("getName=" + mapClass.getName()); // java.util.HashMap
         System.out.println("String[].class getName=" + String[].class.getName());// class [Ljava.lang.String;
+        System.out.println("String[].class getCanonicalName=" + String[].class.getCanonicalName());// class [Ljava.lang.String;
+        System.out.println("String[].class getName=" + String[].class.getName());// class [Ljava.lang.String;
         System.out.println(
                 "String[].class getCanonicalName=" + String[].class.getCanonicalName());// class [Ljava.lang.String;
         Class<?>[] mapClasses = mapClass.getClasses();
         for (Class<?> c : mapClasses)
             System.out.println("getClasses=" + c);
+        System.out.println("String[].class getClasses=" + String[].class.getClasses());
+        Annotation[] annotations = mapClass.getDeclaredAnnotations();
+        for (Annotation a : annotations)
+            System.out.println("getDeclaredAnnotations=" + a);
+        Field[] fields = mapClass.getDeclaredFields();
+        for (Field f : fields)
+            System.out.println("getDeclaredFields=" + f.toGenericString());
+//        Method[] methods = mapClass.getMethods();
+//        for (Method m : methods)
+//            System.out.println("getMethods=" + m.toGenericString());
         Constructor<?>[] cons = mapClass.getConstructors();
         System.out.println("---------------------------------");
         for (Constructor<?> c : cons) {
