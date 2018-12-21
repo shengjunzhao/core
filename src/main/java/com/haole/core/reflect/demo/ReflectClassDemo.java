@@ -211,5 +211,6 @@ public class ReflectClassDemo {
     public static void main(String[] args) throws NoSuchMethodException, NoSuchFieldException {
         reflectClass();
         //        typeVariable(new ArrayList<>());
+        System.out.println('\u0023');
     }
 }
