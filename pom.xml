@@ -172,5 +172,35 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>maven-public</id>
+            <name>maven-public</name>
+            <url>http://localhost:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>Nexus Release</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>nexus</id>
+            <name>Nexus Snapshot</name>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <!-- <site> <id>nexus</id> <name>Nexus Sites</name> <url>dav:http://localhost:8081/repository/maven-snapshots/</url>
+            </site> -->
+    </distributionManagement>
+
 
 </project>
