@@ -30,7 +30,7 @@ public class NumberUtils {
 
     /**
      * 判断一个数字是否是2次幂
-     *
+     * (val & -val) == val; 判断val是否是2的次方，(val & -val)=2 是偶数，(val & -val)=1是奇数
      * @param n
      * @return
      */
