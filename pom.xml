@@ -20,7 +20,7 @@
         <jdk.version>1.8</jdk.version>
         <zookeeper.version>3.5.5</zookeeper.version>
         <curator.version>4.0.1</curator.version>
-        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring.version>5.2.21.RELEASE</spring.version>
     </properties>
 
     <dependencies>
